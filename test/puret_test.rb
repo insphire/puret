@@ -4,7 +4,7 @@ class PuretTest < ActiveSupport::TestCase
   def setup
     setup_db
     I18n.locale = I18n.default_locale = :en
-    Post.create(:title => 'English title')
+    Post.create(:translated_title => 'English title')
   end
 
   def teardown
@@ -17,20 +17,20 @@ class PuretTest < ActiveSupport::TestCase
  
   test "allow translation" do
     I18n.locale = :de
-    Post.first.update_attribute :title, 'Deutscher Titel'
-    assert_equal 'Deutscher Titel', Post.first.title
+    Post.first.update_attribute :translated_title, 'Deutscher Titel'
+    assert_equal 'Deutscher Titel', Post.first.translated_title
     I18n.locale = :en
-    assert_equal 'English title', Post.first.title
+    assert_equal 'English title', Post.first.translated_title
   end
  
   test "assert fallback to default locale" do
     post = Post.first
     I18n.locale = :sv
-    post.title = 'Svensk titel'
+    post.translated_title = 'Svensk titel'
     I18n.locale = :en
-    assert_equal 'English title', post.title
+    assert_equal 'English title', post.translated_title
     I18n.locale = :de
-    assert_equal 'English title', post.title
+    assert_equal 'English title', post.translated_title
   end
  
   test "assert fallback to saved default locale defined on instance" do
@@ -38,12 +38,12 @@ class PuretTest < ActiveSupport::TestCase
     def post.default_locale() :sv; end
     assert_equal :sv, post.puret_default_locale
     I18n.locale = :sv
-    post.title = 'Svensk titel'
+    post.translated_title = 'Svensk titel'
     post.save!
     I18n.locale = :en
-    assert_equal 'English title', post.title
+    assert_equal 'English title', post.translated_title
     I18n.locale = :de
-    assert_equal 'Svensk titel', post.title
+    assert_equal 'Svensk titel', post.translated_title
   end
  
   test "assert fallback to saved default locale defined on class level" do
@@ -51,12 +51,12 @@ class PuretTest < ActiveSupport::TestCase
     def Post.default_locale() :sv; end
     assert_equal :sv, post.puret_default_locale
     I18n.locale = :sv
-    post.title = 'Svensk titel'
+    post.translated_title = 'Svensk titel'
     post.save!
     I18n.locale = :en
-    assert_equal 'English title', post.title
+    assert_equal 'English title', post.translated_title
     I18n.locale = :de
-    assert_equal 'Svensk titel', post.title
+    assert_equal 'Svensk titel', post.translated_title
   end
  
   test "post has_many translations" do
@@ -65,7 +65,7 @@ class PuretTest < ActiveSupport::TestCase
  
   test "translations are deleted when parent is destroyed" do
     I18n.locale = :de
-    Post.first.update_attribute :title, 'Deutscher Titel'
+    Post.first.update_attribute :translated_title, 'Deutscher Titel'
     assert_equal 2, PostTranslation.count
     
     Post.destroy_all
@@ -83,20 +83,20 @@ class PuretTest < ActiveSupport::TestCase
   test 'temporary locale switch should not clear changes' do
     I18n.locale = :de
     post = Post.first
-    post.text = 'Deutscher Text'
-    assert !post.title.blank?
-    assert_equal 'Deutscher Text', post.text
+    post.translated_text = 'Deutscher Text'
+    assert !post.translated_title.blank?
+    assert_equal 'Deutscher Text', post.translated_text
   end
 
   test 'temporary locale switch should work like expected' do
     post = Post.new
-    post.title = 'English title'
+    post.translated_title = 'English title'
     I18n.locale = :de
-    post.title = 'Deutscher Titel'
+    post.translated_title = 'Deutscher Titel'
     post.save
-    assert_equal 'Deutscher Titel', post.title
+    assert_equal 'Deutscher Titel', post.translated_title
     I18n.locale = :en
-    assert_equal 'English title', post.title
+    assert_equal 'English title', post.translated_title
   end
 
   test 'translation model should validate presence of model' do

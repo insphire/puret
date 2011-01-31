@@ -6,17 +6,23 @@ Puret is quiet like model_translations http://github.com/janne/model_translation
 
 Puret does not create the translation model dynamically (like model_translations does) but creates the file via generator. Puret wants to leave out as much magic as possible and want to allow customizing every part of your application.
 
+== Fork Details
 
-== Installation
+This is a fork of the excellent original gem created by jo [https://github.com/jo/puret].
 
-You need configure the puret gem inside your gemfile:
+This fork has been created for three reasons:
 
-  source 'http://gemcutter.org'
-  gem 'puret'
+(1) to allow for the use of an enabled option, for an application providing a system setting to control whether model attribute translations are required;
 
-You can also use the latest edge version by specifying the git repository:
+(2) to cater for the parent model containing the standard/default text for translatable attributes;
 
-  gem 'puret', :git => 'git://github.com/jo/puret.git'
+(3) to provide the ability to maintain translations through a grand-parent model using accepts_nested_attributes_for eg. with a nested model hierarchy like a Post has_many Comments has_many Translations; with the original gem saving an existing Post with an existing Comment any updated Translations were not saved and a "Can't mass-assign these protected attributes: id" was produced also when saving an existing Post with an unchanged Comment no Translations were saved due to the use of the before_save and internal array approach as the Comment was not being saved.
+
+== Using the Fork
+
+To use this fork add the following to your application gemfile: 
+
+  gem 'puret', :git => "git://github.com/chrismhilton/userstamp.git"
 
 Do not forget to run
 
@@ -58,26 +64,38 @@ Thats it!
 
 Now you are able to translate values for the attributes :title and :description per locale:
 
+  post.title = 'Puret rocks!'
   I18n.locale = :en
-  post.title = 'Puret really rocks!'
+  post.translated_title = 'Puret really rocks!'
   I18n.locale = :de
-  post.title = 'Puret rockt wirklich!'
+  post.translated_title = 'Puret rockt wirklich!'
 
   I18n.locale = :en
-  post.title #=> Puret really rocks!
+  post.translated_title #=> Puret really rocks!
   I18n.locale = :de
-  post.title #=> Puret rockt wirklich!
+  post.translated_title #=> Puret rockt wirklich!
+  I18n.locale = :fr
+  post.translated_title #=> Puret rocks!
 
 
 == Translation lookup fallback
 
-If a translation is not available in your locale, puret looks 
+If a translation is not available in your locale, puret looks
 
-1. for an instance method called *default_locale* and the corresponding translation
-2. for a class method called *default_locale* and the corresponding translation
-3. for a translation in I18n.default_locale
+1. for an attribute method in the parent model for the standard/default text
+2. for an instance method called *default_locale* and the corresponding translation
+3. for a class method called *default_locale* and the corresponding translation
+4. for a translation in I18n.default_locale
 
 In case a translation is not available in the default locale, puret uses the first locale it could find. That order is specified by creation time, so the first created translation will be returned.
+
+Puret also looks for the following to determine whether translations are enabled
+
+1. for an instance method called *translations_enabled?*
+2. for a class method called *translations_enabled?*
+3. if neither exist then translations are considered enabled
+
+If translations are disabled then the translated_ methods return the standard/default text if an equivalent attribute method exists in the parent model otherwise nil.
 
 
 == Generators
