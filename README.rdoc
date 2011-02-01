@@ -8,7 +8,7 @@ Puret does not create the translation model dynamically (like model_translations
 
 == Fork Details
 
-This is a fork of the excellent original gem created by jo [https://github.com/jo/puret].
+This is a fork of the excellent original gem created by Johannes Jörg Schmidt [https://github.com/jo/puret].
 
 This fork has been created for three reasons:
 
@@ -118,14 +118,3 @@ Keep it simple! Relax.
 == Diggin deeper
 
 Read the Rdoc documentation at http://rdoc.info/projects/jo/puret.
-
-
-== Bugs and Feedback
-
-If you discover any bugs or want to drop a line, feel free to create an issue on
-GitHub:
-
-http://github.com/jo/puret/issues
-
-
-Copyright (c) 2010 Johannes Jörg Schmidt, TF, released under the MIT license
