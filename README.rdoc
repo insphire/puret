@@ -22,7 +22,7 @@ This fork has been created for three reasons:
 
 To use this fork add the following to your application gemfile: 
 
-  gem 'puret', :git => "git://github.com/chrismhilton/userstamp.git"
+  gem 'puret', :git => "git://github.com/insphire/userstamp.git"
 
 Do not forget to run
 
